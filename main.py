@@ -205,7 +205,13 @@ for r in range(10):
 for i in range(11):
     cipherText = encrypt(cipherText, i)
 
+finalCipher = ""
+for word in cipherText:
+    for letter in word:
+        finalCipher += letter
+
 print("\nPlain text: " + plainText)
 print("Master key: " + plainTextKey)
 print("Final result: " + str(cipherText))
+
 
