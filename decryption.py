@@ -50,7 +50,7 @@ def decrypt(cipher, round):
         return cipher
     else:
         # inverse shift rows
-        print("  2. Inverse shift rows")
+        print("  1. Inverse shift rows")
         print("    Cipher: " + str(cipher))
         cipher = inverseShiftRows(cipher)
         print("    Result: " + str(cipher))
@@ -58,7 +58,7 @@ def decrypt(cipher, round):
         newCipher = []
         for i in range(4):
             newCipher.append(inverseSubBytes(cipher[i]))
-        print("  1. Inverse sub bytes")
+        print("  2. Inverse sub bytes")
         print("    Cipher: " + str(cipher))
         print("    Result: " + str(newCipher))
         cipher = newCipher
@@ -66,7 +66,7 @@ def decrypt(cipher, round):
         cipher = main.addRoundKey(cipher, round)
         #mix columns
         if round != 0:
-            print("  2. Inverse mix columns")
+            print("  4. Inverse mix columns")
             print("    Cipher: " + str(cipher))
             print("    Matrix: " + str(invMixColMatrix))
             cipher = inverseMixColumns(cipher)
@@ -75,5 +75,32 @@ def decrypt(cipher, round):
 
 decryptedCipher = main.cipherText
 
+print("\n\nStarting decryption...\n")
 for i in range(10, -1, -1):
     decryptedCipher = decrypt(decryptedCipher, i)
+
+decryptedMessage = ""
+success = True
+for i in range(4):
+    for j in range(4):
+        if decryptedCipher[i][j] != main.plainTextHex[i][j]:
+            success = False
+        decryptedMessage += chr(int(decryptedCipher[i][j], 16))
+
+print("\nDecryption finished.\n")
+if success:
+    print("Decryption successful.")
+else:
+    print("Decryption was unsuccessful.")
+
+print("\nResults:\n")
+print("    Plain text: " + main.plainText)
+print("    Master key: " + main.plainTextKey)
+print("\n    Plain HEX text:     " + str(main.plainTextHex))
+
+print("\n    Encrypted HEX text: " + str(main.cipherText))
+print("    Encrypted text: " + main.finalCipher)
+
+print("\n    Decrypted HEX text:   " + str(decryptedCipher))
+print("    Decrypted plain text: " + decryptedMessage)
+

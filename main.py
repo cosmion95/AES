@@ -1,11 +1,15 @@
 import sbox_tables
 import multiplication_tables
 
-plainTextKey = "ATUNCI POTI FUGI"
-plainText = "NU RUPETI LEMNUL"
+# plainText = "NU RUPETI LEMNUL"
+# plainTextKey = "ATUNCI POTI FUGI"
+
+plainText = "AM VAZUT DOI CAI"
+plainTextKey = "NU CRED CA VEDEM"
 
 keys = []
 cipherText = []
+plainTextHex = []
 
 roundConstants = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36]
 
@@ -33,6 +37,7 @@ for ch in plainText:
     letters.append(hex(ord(ch)))
     if byteCounter%4 == 0:
         cipherText.append(letters)
+        plainTextHex.append(letters)
         letters = []
     byteCounter += 1
 
@@ -130,10 +135,12 @@ def shiftRows(cipher):
 def multiplication(word1, word2):
     newWord = []
     for i in range(4):
-        if word1[i] == 1:
-            newWord.append(hex(word2[i]))
-        elif word2[i] == 1:
-            newWord.append(hex(word1[i]))
+        if int(word1[i], 16) == 1:
+            newWord.append(word2[i])
+        elif int(word2[i], 16) == 1:
+            newWord.append(word1[i])
+        elif int(word1[i], 16) == 0:
+            newWord.append(word1[i])
         else:
             l1 = multiplication_tables.l[int(word1[i], 16)]
             l2 = multiplication_tables.l[int(word2[i], 16)]
@@ -197,10 +204,16 @@ for r in range(10):
         getRoundKey(r, wordCounter)
         wordCounter += 1
 
-# counter = 0
-# for word in keys:
-#     print(str(counter) + ".: " + str(word))
-#     counter += 1
+print("\nPlain text: " + plainText)
+print("Master key: " + plainTextKey)
+
+print("Calculated round keys:")
+counter = 0
+for word in keys:
+    print("    Word " + str(counter) + ".: " + str(word))
+    counter += 1
+
+print("\nStarting encryption...\n")
 
 for i in range(11):
     cipherText = encrypt(cipherText, i)
@@ -208,10 +221,11 @@ for i in range(11):
 finalCipher = ""
 for word in cipherText:
     for letter in word:
-        finalCipher += letter
+        finalCipher += chr(int(letter, 16))
 
-print("\nPlain text: " + plainText)
-print("Master key: " + plainTextKey)
-print("Final result: " + str(cipherText))
+print("\nEncryption finished.\n")
+print("Encrypted text: " + str(cipherText))
+
+
 
 
